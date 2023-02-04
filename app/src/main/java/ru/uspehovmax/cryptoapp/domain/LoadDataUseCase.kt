@@ -1,9 +1,11 @@
 package ru.uspehovmax.cryptoapp.domain
 
-class LoadDataUseCase(
+import javax.inject.Inject
+
+class LoadDataUseCase @Inject constructor(
     private val repository: CoinRepository
 ) {
 
     //загрузка из сети - suspend
-    suspend operator fun invoke() = repository.loadData()
+    operator fun invoke() = repository.loadData()
 }

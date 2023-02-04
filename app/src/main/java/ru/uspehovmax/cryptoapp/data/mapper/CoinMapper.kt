@@ -6,8 +6,12 @@ import ru.uspehovmax.cryptoapp.data.network.model.CoinInfoDto
 import ru.uspehovmax.cryptoapp.data.network.model.CoinInfoJsonContainerDto
 import ru.uspehovmax.cryptoapp.data.network.model.CoinNamesListDto
 import ru.uspehovmax.cryptoapp.domain.CoinInfo
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.util.*
+import javax.inject.Inject
 
-class CoinMapper {
+class CoinMapper @Inject constructor() {
     // проеобразование объекты из ДТО в объекты БД
     fun mapDtoToDbModel(dto: CoinInfoDto) = CoinInfoDbModel(
         fromSymbol = dto.fromSymbol,
@@ -17,7 +21,7 @@ class CoinMapper {
         highDay = dto.highDay,
         lowDay = dto.lowDay,
         lastMarket = dto.lastMarket,
-        imageUrl = dto.imageUrl
+        imageUrl = BASE_IMAGE_URL + dto.imageUrl
     )
 
     // проеобразование Json-контейнер в список объектов CoinInfoDto
@@ -57,4 +61,18 @@ class CoinMapper {
         lastMarket = dbModel.lastMarket,
         imageUrl = dbModel.imageUrl
     )
+
+    private fun convertTimestampToTime(timestamp: Long?): String {
+        if (timestamp == null) return ""
+        val stamp = Timestamp(timestamp * 1000)
+        val date = Date(stamp.time)
+        val pattern = "HH:mm:ss"
+        val sdf = SimpleDateFormat(pattern, Locale.getDefault())
+        sdf.timeZone = TimeZone.getDefault()
+        return sdf.format(date)
+    }
+
+    companion object {
+        const val BASE_IMAGE_URL = "https://cryptocompare.com"
+    }
 }
